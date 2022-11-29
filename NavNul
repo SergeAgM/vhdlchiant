@@ -1,0 +1,104 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity LED_0_controller is
+    Port ( 
+    sw: in std_logic_vector(15 downto 0);
+    clk: in STD_LOGIC; 
+   seg : out std_logic_vector(6 downto 0);
+   an : out std_logic_vector(3 downto 0):="0000"
+    );
+end LED_0_controller;
+
+architecture Behavioral of LED_0_controller is
+
+type statetype is (an0, an1, an2, an3);
+signal state : statetype;
+
+signal vec: std_logic_vector (3 downto 0);
+signal val: std_logic_vector (3 downto 0);
+signal clk2: std_logic:='0';
+signal compteur: std_logic_vector(3 downto 0):="0000"; 
+
+begin
+
+process(clk)
+begin
+if  rising_edge(clk) then
+case state is
+    when an0 => an <= "0111";
+        vec(0) <= sw(0);
+        vec(1) <= sw(1);
+        vec(2) <= sw(2);
+        vec(3) <= sw(3);
+        case vec is
+   when  "0000" => seg <="1000000";
+   when "0001" => seg  <= "1111001";
+   when "0010"=>  seg  <= "1100100";
+   when "0011" =>  seg  <= "1110000";
+   when "0100" =>  seg  <= "0011001";
+   when "0101" =>  seg  <= "0010010";
+   when "0110" => seg  <= "0000010";
+   when "0111" =>  seg  <= "1110000";
+   when "1000" => seg  <= "0000000";
+   when "1001"=>  seg <= "0010000";
+   when "1010"=>  seg <= "0001000";
+   when "1011"=>  seg <= "0000011";
+   when "1100"=>  seg <= "1000110";
+   when "1101"=>  seg <=  "0100001";
+   when "1110"=>  seg <= "0000110";
+   when "1111"=>  seg <= "0001110";
+   end case;
+
+when "0000" => compteur <= "0001";
+when "0001" => compteur <= "0010";
+when "0010" => compteur <= "0011";
+when "0011" => compteur <= "0100";
+when "0100" => compteur <= "0101";
+when "0101" => compteur <= "0110";
+when "0110" => compteur <= "0111";
+when "0111" => compteur <= "1000";
+when "1000" => compteur <= "1001";
+when "1001" => compteur <= "1010";
+end case;
+end if;
+end process;
+
+process(compteur) is
+begin
+    if compteur="1010" then
+    compteur<="0000";
+
+   case  is 
+   when i=>0 an <="0111";
+   when i=>1 an <="1011";
+   when i=>2 an <="1101";
+   when i=>3 an <="1110";
+end case;
+vec(0) <= sw(4*i);
+vec(1) <= sw(4*i+1);
+vec(2) <= sw(4*i+2);
+vec(3) <= sw(4*i+3);
+case vec is
+   when  "0000" => seg <="1000000";
+   when "0001" => seg  <= "1111001";
+   when "0010"=>  seg  <= "1100100";
+   when "0011" =>  seg  <= "1110000";
+   when "0100" =>  seg  <= "0011001";
+   when "0101" =>  seg  <= "0010010";
+   when "0110" => seg  <= "0000010";
+   when "0111" =>  seg  <= "1110000";
+   when "1000" => seg  <= "0000000";
+   when "1001"=>  seg <= "0010000";
+   when "1010"=>  seg <= "0001000";
+   when "1011"=>  seg <= "0000011";
+   when "1100"=>  seg <= "1000110";
+   when "1101"=>  seg <=  "0100001";
+   when "1110"=>  seg <= "0000110";
+   when "1111"=>  seg <= "0001110";
+   end case;
+end loop ;
+    end if;
+end process;
+
+end Behavioral;
